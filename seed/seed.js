@@ -1,4 +1,6 @@
 import dotenv from "dotenv";
+import { fileURLToPath } from "url";
+import path from "path";
 import connectDB from "../config/db.js";
 import Admin from "../models/Admin.js";
 import Category from "../models/Category.js";
@@ -17,17 +19,16 @@ const categories = [
   { name: "Travel", icon: "Plane", color: "#0d9488" },
 ];
 
-const run = async () => {
-  await connectDB();
+export const seedDatabase = async () => {
 
   // Admin
-  const adminEmail = (process.env.ADMIN_EMAIL || "admin@trendpluse.com").toLowerCase();
+  const adminEmail = (process.env.ADMIN_EMAIL || "admin@trendify.com").toLowerCase();
   const existingAdmin = await Admin.findOne({ email: adminEmail });
   if (!existingAdmin) {
     await Admin.create({
       name: "Admin",
       email: adminEmail,
-      password: process.env.ADMIN_PASSWORD || "ChangeMe123!",
+      password: process.env.ADMIN_PASSWORD || "krushi.trendify.5503",
     });
     console.log(`Admin created: ${adminEmail}`);
   } else {
@@ -130,10 +131,19 @@ const run = async () => {
   }
 
   console.log("Seeding complete.");
-  process.exit(0);
 };
 
-run().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+const nodePath = path.resolve(process.argv[1] || "");
+const modulePath = path.resolve(fileURLToPath(import.meta.url));
+
+if (nodePath === modulePath) {
+  const runDirectly = async () => {
+    await connectDB();
+    await seedDatabase();
+    process.exit(0);
+  };
+  runDirectly().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}
