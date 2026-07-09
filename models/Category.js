@@ -10,6 +10,7 @@ const categorySchema = new mongoose.Schema(
     color: { type: String, default: "#4f46e5" },
     image: { type: String, default: "" },
     parentCategory: { type: mongoose.Schema.Types.ObjectId, ref: "Category", default: null },
+    order: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

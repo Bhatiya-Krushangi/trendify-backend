@@ -8,7 +8,7 @@ const router = express.Router();
 // Public: list all categories with article counts
 router.get("/", async (req, res) => {
   try {
-    const categories = await Category.find().sort({ name: 1 }).lean();
+    const categories = await Category.find().sort({ order: 1, name: 1 }).lean();
     const withCounts = await Promise.all(
       categories.map(async (c) => {
         const count = await Post.countDocuments({ category: c._id, status: "published" });
@@ -34,10 +34,32 @@ router.get("/:slug", async (req, res) => {
 // Admin: create
 router.post("/", protect, async (req, res) => {
   try {
-    const category = await Category.create(req.body);
+    const maxCategory = await Category.findOne().sort({ order: -1 }).select("order").lean();
+    const nextOrder = maxCategory && typeof maxCategory.order === "number" ? maxCategory.order + 1 : 0;
+    const category = await Category.create({ ...req.body, order: nextOrder });
     res.status(201).json(category);
   } catch (err) {
     res.status(400).json({ message: err.message });
+  }
+});
+
+// Admin: reorder
+router.put("/reorder", protect, async (req, res) => {
+  try {
+    const { orders } = req.body;
+    if (!Array.isArray(orders)) {
+      return res.status(400).json({ message: "orders must be an array of { id, order }" });
+    }
+    const bulkOps = orders.map((item) => ({
+      updateOne: {
+        filter: { _id: item.id },
+        update: { $set: { order: item.order } },
+      },
+    }));
+    await Category.bulkWrite(bulkOps);
+    res.json({ message: "Category order updated" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
