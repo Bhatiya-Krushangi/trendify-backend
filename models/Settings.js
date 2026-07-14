@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 
 const settingsSchema = new mongoose.Schema(
   {
-    siteName: { type: String, default: "TrendPluse" },
+    siteName: { type: String, default: "NexTrendX" },
     tagline: { type: String, default: "Your trusted source for breaking news, in-depth analysis, and trending stories from around the world." },
-    logoText: { type: String, default: "TrendPluse" },
-    contactEmail: { type: String, default: "contact@trendpluse.com" },
+    logoText: { type: String, default: "NexTrendX" },
+    contactEmail: { type: String, default: "nextrendx.contact@gmail.com" },
     adsenseClientId: { type: String, default: "" }, // e.g. ca-pub-XXXXXXXXXXXXXXXX
     adsenseEnabled: { type: Boolean, default: false },
     adSlots: {
