@@ -33,6 +33,9 @@ const allowedOrigins = [];
 if (process.env.CLIENT_URL) {
   allowedOrigins.push(process.env.CLIENT_URL.replace(/\/$/, ""));
 }
+if (process.env.CLIENT_URL_2) {
+  allowedOrigins.push(process.env.CLIENT_URL_2.replace(/\/$/, ""));
+}
 
 app.use(
   cors({
