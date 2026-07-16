@@ -148,4 +148,14 @@ router.post("/reorder", protect, async (req, res) => {
   }
 });
 
+// Admin: reset all post views to 0
+router.post("/admin/reset-views", protect, async (req, res) => {
+  try {
+    const result = await Post.updateMany({}, { $set: { views: 0 } });
+    res.json({ message: `Views reset to 0 for ${result.modifiedCount} posts.` });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 export default router;
