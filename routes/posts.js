@@ -7,7 +7,7 @@ const router = express.Router();
 // Public: list published posts with filters, search, pagination
 router.get("/", async (req, res) => {
   try {
-    const { category, search, featured, limit = 10, page = 1, exclude, sort = "-createdAt" } = req.query;
+    const { category, search, featured, limit = 10, page = 1, exclude } = req.query;
     const query = { status: "published" };
 
     if (category) {
@@ -33,7 +33,7 @@ router.get("/", async (req, res) => {
     const total = await Post.countDocuments(query);
     const posts = await Post.find(query)
       .populate("category", "name slug color")
-      .sort(sort)
+      .sort({ order: 1, createdAt: -1 })
       .skip((pageNum - 1) * limitNum)
       .limit(limitNum)
       .lean();
