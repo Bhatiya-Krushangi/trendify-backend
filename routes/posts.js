@@ -112,7 +112,9 @@ router.put("/:id", protect, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: "Post not found" });
-    Object.assign(post, req.body);
+    // Exclude read-only fields so views/slug are never reset by an edit save
+    const { views: _views, _id: _id_, slug: _slug, ...editable } = req.body;
+    Object.assign(post, editable);
     await post.save();
     res.json(post);
   } catch (err) {
