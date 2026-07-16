@@ -14,6 +14,7 @@ const postSchema = new mongoose.Schema(
     status: { type: String, enum: ["draft", "published"], default: "published" },
     featured: { type: Boolean, default: false },
     views: { type: Number, default: 0 },
+    order: { type: Number, default: 0 },
     metaTitle: { type: String, default: "" },
     metaDescription: { type: String, default: "" },
   },

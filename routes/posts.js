@@ -63,7 +63,7 @@ router.get("/admin/all", protect, async (req, res) => {
   try {
     const posts = await Post.find()
       .populate("category", "name slug color")
-      .sort({ createdAt: -1 })
+      .sort({ order: 1, createdAt: -1 })
       .lean();
     res.json(posts);
   } catch (err) {
@@ -126,6 +126,21 @@ router.delete("/:id", protect, async (req, res) => {
     const post = await Post.findByIdAndDelete(req.params.id);
     if (!post) return res.status(404).json({ message: "Post not found" });
     res.json({ message: "Post deleted" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Admin: reorder posts (save drag-drop order)
+router.post("/reorder", protect, async (req, res) => {
+  try {
+    const { orderedIds } = req.body; // array of post IDs in new order
+    if (!Array.isArray(orderedIds)) return res.status(400).json({ message: "orderedIds must be an array" });
+    const ops = orderedIds.map((id, index) =>
+      Post.findByIdAndUpdate(id, { order: index })
+    );
+    await Promise.all(ops);
+    res.json({ message: "Order saved" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
