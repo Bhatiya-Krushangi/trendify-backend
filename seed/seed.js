@@ -15,7 +15,6 @@ const categories = [
   { name: "Sports", icon: "Trophy", color: "#16a34a" },
   { name: "Entertainment", icon: "Clapperboard", color: "#db2777" },
   { name: "Lifestyle", icon: "Heart", color: "#ea580c" },
-  { name: "Health", icon: "HeartPulse", color: "#dc2626" },
   { name: "Travel", icon: "Plane", color: "#0d9488" },
 ];
 
