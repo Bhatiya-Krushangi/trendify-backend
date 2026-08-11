@@ -8,6 +8,7 @@ const postSchema = new mongoose.Schema(
     excerpt: { type: String, required: true, maxlength: 300 },
     content: { type: String, required: true },
     coverImage: { type: String, default: "" },
+    thumbnailImage: { type: String, default: "" },
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
     tags: [{ type: String, trim: true }],
     author: { type: String, default: "Admin" },
