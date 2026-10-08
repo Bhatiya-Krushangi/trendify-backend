@@ -18,6 +18,7 @@ import settingsRoutes from "./routes/settings.js";
 import uploadRoutes from "./routes/upload.js";
 import contactRoutes from "./routes/contact.js";
 import translateRoutes from "./routes/translate.js";
+import resolveRoutes from "./routes/resolve.js";
 
 dotenv.config();
 connectDB().then(() => {
@@ -77,6 +78,7 @@ app.use("/api/settings", settingsRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/translate", translateRoutes);
+app.use("/api/resolve", resolveRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

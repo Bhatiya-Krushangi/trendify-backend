@@ -75,7 +75,7 @@ router.get("/admin/all", protect, async (req, res) => {
 router.get("/:slug", async (req, res) => {
   try {
     const post = await Post.findOneAndUpdate(
-      { slug: req.params.slug },
+      { $or: [{ slug: req.params.slug }, { urltitle: req.params.slug }] },
       { $inc: { views: 1 } },
       { new: true }
     ).populate("category", "name slug color");
@@ -112,8 +112,7 @@ router.put("/:id", protect, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: "Post not found" });
-    // Exclude read-only fields so views/slug are never reset by an edit save
-    const { views: _views, _id: _id_, slug: _slug, ...editable } = req.body;
+    const { views: _views, _id: _id_, ...editable } = req.body;
     Object.assign(post, editable);
     await post.save();
     res.json(post);

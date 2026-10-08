@@ -4,6 +4,7 @@ import slugify from "slugify";
 const postSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, trim: true },
+    urltitle: { type: String, trim: true, default: "" },
     slug: { type: String, unique: true },
     excerpt: { type: String, required: true, maxlength: 300 },
     content: { type: String, required: true },
@@ -23,14 +24,19 @@ const postSchema = new mongoose.Schema(
 );
 
 postSchema.pre("save", async function (next) {
-  if (this.isModified("title")) {
-    let baseSlug = slugify(this.title, { lower: true, strict: true });
+  if (this.isModified("title") || this.isModified("urltitle") || !this.slug) {
+    const rawSource = (this.urltitle && this.urltitle.trim()) ? this.urltitle.trim() : this.title;
+    let baseSlug = slugify(rawSource, { lower: true, strict: true });
+    if (!baseSlug) {
+      baseSlug = slugify(this.title || "post", { lower: true, strict: true });
+    }
     let slug = baseSlug;
     let count = 1;
     while (await mongoose.models.Post.findOne({ slug, _id: { $ne: this._id } })) {
       slug = `${baseSlug}-${count++}`;
     }
     this.slug = slug;
+    this.urltitle = slug;
   }
   next();
 });
